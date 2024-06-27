@@ -1,0 +1,12 @@
+node_modules
+dist
+lambda.zip
+.yarn
+
+.env
+.env.local
+docker
+
+.serverless
+
+deploy/.serverless

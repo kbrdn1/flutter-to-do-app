@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql" // "sqlite"
+  url      = env("DATABASE_URL") // "file:./dev.db"
+}
+
+// Users{0,n} -> Tasks{1,1}
+// Tasks{0,n} -> Tags{0,n}
+// Priorities{0,n} -> Tasks{0,n}
+
+model Users {
+  id               Int       @id @default(autoincrement())
+  username         String    @unique
+  email            String    @unique
+  password         String
+  token_created_at DateTime?
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+  deleted_at       DateTime?
+  Tasks            Tasks[]
+}
+
+model Tasks {
+  id          Int           @id @default(autoincrement())
+  content     String        @unique
+  deadline    DateTime?
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  deleted_at  DateTime?
+  user_id     Int
+  status_id   Int?          @default(1)
+  priority_id Int           @default(1)
+  Users       Users         @relation(fields: [user_id], references: [id])
+  Status      Status?       @relation(fields: [status_id], references: [id])
+  Tags        Tags[]
+  Priorities  Priorities?   @relation(fields: [priority_id], references: [id])
+  TagsToTasks TagsToTasks[]
+}
+
+model TagsToTasks {
+  tags_id    Int
+  tasks_id   Int
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+  Tags       Tags      @relation(fields: [tags_id], references: [id], onDelete: Cascade)
+  Tasks      Tasks     @relation(fields: [tasks_id], references: [id], onDelete: Cascade)
+
+  @@id([tags_id, tasks_id])
+}
+
+model Status {
+  id         Int       @id @default(autoincrement())
+  name       String    @unique
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+  Tasks      Tasks[]
+}
+
+model Tags {
+  id          Int           @id @default(autoincrement())
+  name        String        @unique
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  deleted_at  DateTime?
+  Tasks       Tasks[]
+  TagsToTasks TagsToTasks[]
+}
+
+model Priorities {
+  id         Int       @id @default(autoincrement())
+  name       String    @unique
+  level      Int       @unique
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+  Tasks      Tasks[]
+}

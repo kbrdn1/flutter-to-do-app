@@ -1,0 +1,32 @@
+{
+  "scripts": {
+    "dev": "bun run --hot src/index.ts",
+    "build": "esbuild --bundle --outfile=./dist/index.js --platform=node --target=node20 ./src/index.ts",
+    "db:migrate": "prisma migrate dev --name init",
+    "db:seed": "prisma db seed",
+    "db:format": "prisma format",
+    "zip": "zip -j lambda.zip dist/index.js",
+    "ci:build": "run-s format build zip",
+    "format": "prettier --write \"./src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "serverless": "bun run build && serverless offline",
+    "make:crud:model": "bash scripts/make/crud/model/create.sh",
+    "make:crud:controller": "bash scripts/make/crud/controller/create.sh",
+    "make:crud:service": "bash scripts/make/crud/service/create.sh",
+    "make:crud:ressource": "bash scripts/make/crud/ressource/create.sh",
+    "make:crud:module": "bash scripts/make/crud/run.sh"
+  },
+  "prisma": {
+    "seed": "bun run prisma/seed.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.0",
+    "esbuild": "^0.17.11",
+    "npm-run-all2": "^6.1.1",
+    "prisma": "^5.16.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.13.0",
+    "hono": "^4.2.3",
+    "prettier": "^3.2.5"
+  }
+}
