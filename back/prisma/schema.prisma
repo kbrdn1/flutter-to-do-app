@@ -10,10 +10,6 @@ datasource db {
   url      = env("DATABASE_URL") // "file:./dev.db"
 }
 
-// Users{0,n} -> Tasks{1,1}
-// Tasks{0,n} -> Tags{0,n}
-// Priorities{0,n} -> Tasks{0,n}
-
 model Users {
   id               Int       @id @default(autoincrement())
   username         String    @unique
